@@ -46,7 +46,7 @@ contract FairCoin is Context, IERC20 {
         creationDate = block.timestamp;
         
         // should be modifiable in future implementations
-        ABDK_redistributionRate = Ak.div(Ak.fromInt(redistributionRatePercentage),Ak.fromInt(100)); // simulates a 4% inflation
+        ABDK_redistributionRate = Ak.div(Ak.fromInt(redistributionRatePercentage),Ak.fromInt(100));
         
         numberOfRecipients = originalRecipients.length;
         for(uint i = 0; i < originalRecipients.length; i++){
