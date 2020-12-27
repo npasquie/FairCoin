@@ -19,35 +19,43 @@ contract FairCoin is Context, IERC20 {
     // please consider the output of balanceOf(account) as the real balance of an account.
     mapping (address => uint256) private _balances;
     mapping (address => mapping (address => uint256)) private _allowances;
-    
+
     // must not exceed 9223372036854775807
     // suggested :     5000000000000000000
     uint256 private _totalSupply;
-    
+
     string private _name;
     string private _symbol;
     uint8 private _decimals;
-    
+
     // FairCoin added parameters
     uint private numberOfRecipients;
     mapping(address => bool) private isRecipient;
     int128 private ABDK_redistributionRate;
     mapping(address => uint) private dateOfLastOperation;
     uint256 private creationDate;
-    
+
     int128 immutable private ABDK_minusOne = Ak.fromInt(-1);
 
     // FairCoin's implementation
-    constructor (string memory name_, string memory symbol_, address[] memory originalRecipients, uint totalSupply, int redistributionRatePercentage) {
+    constructor (
+        string memory name_,
+        string memory symbol_,
+        address[] memory originalRecipients,
+        uint totalSupply,
+        int redistributionRatePercentage) {
         _name = name_;
         _symbol = symbol_;
-        _decimals = 18;
+
+        // usual value is 18, but beacause of int64 max value, with 18 decimals the total supply cannot exceed ~9.23
+        // with 5, it is 92,233,720,368,547.75807
+        _decimals = 5;
         _totalSupply = totalSupply; // arbitrary choice
         creationDate = block.timestamp;
-        
+
         // should be modifiable in future implementations
-        ABDK_redistributionRate = Ak.div(Ak.fromInt(redistributionRatePercentage),Ak.fromInt(100)); // simulates a 4% inflation
-        
+        ABDK_redistributionRate = Ak.div(Ak.fromInt(redistributionRatePercentage),Ak.fromInt(100));
+
         numberOfRecipients = originalRecipients.length;
         for(uint i = 0; i < originalRecipients.length; i++){
             _balances[originalRecipients[i]] = _totalSupply/originalRecipients.length;
@@ -80,51 +88,51 @@ contract FairCoin is Context, IERC20 {
          * s(t) : according to the redidtribution strategy, 
          * calculates the new balance of an account from a chosen date considered the origin 0, after the time t is elapsed 
          */
-         
+
         // if the account was never involved in a transaction, we calculate the redidtribution since contract creation.
         uint trueDateOfLastOperation = dateOfLastOperation[account] == 0 ? creationDate : dateOfLastOperation[account];
-        
+
         // time elapsed in years = (now - dateOfLastTransaction) / years
-        int128 ABDK_elapsedTimeSinceLastTransaction = 
-            Ak.div(
-                Ak.sub(
-                    Ak.fromInt(int256(block.timestamp)),
-                    Ak.fromInt(int256(trueDateOfLastOperation))),
-                Ak.fromInt(365 days));
-        
+        int128 ABDK_elapsedTimeSinceLastTransaction =
+        Ak.div(
+            Ak.sub(
+                Ak.fromInt(int256(block.timestamp)),
+                Ak.fromInt(int256(trueDateOfLastOperation))),
+            Ak.fromInt(365 days));
+
         // e^(-F*t)
-        int128 ABDK_expMinusFTimesT = 
-            Ak.exp(
+        int128 ABDK_expMinusFTimesT =
+        Ak.exp(
+            Ak.mul(
+                ABDK_elapsedTimeSinceLastTransaction,
                 Ak.mul(
-                    ABDK_elapsedTimeSinceLastTransaction,
-                    Ak.mul(
-                        ABDK_redistributionRate,
-                        ABDK_minusOne)));
-               
+                    ABDK_redistributionRate,
+                    ABDK_minusOne)));
+
         // (Q/N)*(1-e^(-F*t))         
-        int128 ABDK_allocationPart = 
-            Ak.mul(
-                Ak.sub(
-                    Ak.fromInt(1),
-                    ABDK_expMinusFTimesT),
-                Ak.div(
-                    Ak.fromInt(int256(_totalSupply)),
-                    Ak.fromInt(int256(numberOfRecipients))));
-                    
+        int128 ABDK_allocationPart =
+        Ak.mul(
+            Ak.sub(
+                Ak.fromInt(1),
+                ABDK_expMinusFTimesT),
+            Ak.div(
+                Ak.fromInt(int256(_totalSupply)),
+                Ak.fromInt(int256(numberOfRecipients))));
+
         // s(0)*e^(-F*t)
-        int128 ABDK_taxPart = 
-            Ak.mul(
-                Ak.fromInt(int256(_balances[account])),
-                ABDK_expMinusFTimesT);
-        
+        int128 ABDK_taxPart =
+        Ak.mul(
+            Ak.fromInt(int256(_balances[account])),
+            ABDK_expMinusFTimesT);
+
         // s(t) = (Q/N)*(1-e^(-F*t)) + s(0)*e^(-F*t)
         return isRecipient[account] ?
-                Ak.toUInt(
-                    Ak.add(
-                        ABDK_allocationPart,
-                        ABDK_taxPart))
-            :
-                Ak.toUInt(ABDK_taxPart);
+        Ak.toUInt(
+            Ak.add(
+                ABDK_allocationPart,
+                ABDK_taxPart))
+        :
+        Ak.toUInt(ABDK_taxPart);
     }
 
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
@@ -156,7 +164,7 @@ contract FairCoin is Context, IERC20 {
         _approve(_msgSender(), spender, _allowances[_msgSender()][spender].sub(subtractedValue, "ERC20: decreased allowance below zero"));
         return true;
     }
-    
+
     // FairCoin's implementation
     function _transfer(address sender, address recipient, uint256 amount) internal virtual {
         require(sender != address(0), "ERC20: transfer from the zero address");
@@ -166,7 +174,7 @@ contract FairCoin is Context, IERC20 {
         _balances[recipient] = balanceOf(recipient).add(amount);
         dateOfLastOperation[sender] = block.timestamp;
         dateOfLastOperation[recipient] = block.timestamp;
-        
+
         emit Transfer(sender, recipient, amount);
     }
 
