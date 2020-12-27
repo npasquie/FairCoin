@@ -1,0 +1,7 @@
+{
+  "license": "mit",
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.3.0",
+    "abdk-libraries-solidity": "^2.4.0"
+  }
+}
