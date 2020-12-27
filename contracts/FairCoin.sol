@@ -21,6 +21,7 @@ contract FairCoin is Context, IERC20 {
     mapping (address => mapping (address => uint256)) private _allowances;
     
     // must not exceed 9223372036854775807
+    // suggested :     5000000000000000000
     uint256 private _totalSupply;
     
     string private _name;
@@ -37,15 +38,15 @@ contract FairCoin is Context, IERC20 {
     int128 immutable private ABDK_minusOne = Ak.fromInt(-1);
 
     // FairCoin's implementation
-    constructor (string memory name_, string memory symbol_, address[] memory originalRecipients) {
+    constructor (string memory name_, string memory symbol_, address[] memory originalRecipients, uint totalSupply, int redistributionRatePercentage) {
         _name = name_;
         _symbol = symbol_;
         _decimals = 18;
-        _totalSupply = 5000000000000000000; // arbitrary choice
+        _totalSupply = totalSupply; // arbitrary choice
         creationDate = block.timestamp;
         
         // should be modifiable in future implementations
-        ABDK_redistributionRate = Ak.div(Ak.fromInt(4),Ak.fromInt(100)); // simulates a 4% inflation
+        ABDK_redistributionRate = Ak.div(Ak.fromInt(redistributionRatePercentage),Ak.fromInt(100)); // simulates a 4% inflation
         
         numberOfRecipients = originalRecipients.length;
         for(uint i = 0; i < originalRecipients.length; i++){

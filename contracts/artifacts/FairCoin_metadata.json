@@ -21,6 +21,16 @@
 						"internalType": "address[]",
 						"name": "originalRecipients",
 						"type": "address[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalSupply",
+						"type": "uint256"
+					},
+					{
+						"internalType": "int256",
+						"name": "redistributionRatePercentage",
+						"type": "int256"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -376,11 +386,11 @@
 			]
 		},
 		"localhost/contracts/FairCoin.sol": {
-			"keccak256": "0x696d58fc9d51cf1c9a3812d0b5bb03f1aa7c3dae14d8440084aaa9194593c58e",
+			"keccak256": "0x2155043a79133435f9fc6bb17e4e544b6ee05a70f0ba90966bc16715d4647b2c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://93e5c33ad917c019b89071d8750279c83e74b9def34d0178bca68a85ee4b3cc8",
-				"dweb:/ipfs/QmaAsG3JGAuZjQ9GxKz2v9hZw9MhGuke1bietPWokMPnmD"
+				"bzz-raw://b43cc8ffecce4700d7d9f975be164c634e7f03a36589782213186da2e24d9dbc",
+				"dweb:/ipfs/QmfJXMEAkdAtx7tGFdkY6iw7dkhb3rMsutQXPYrk1Sr9ko"
 			]
 		}
 	},
