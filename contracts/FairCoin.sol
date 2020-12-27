@@ -110,6 +110,7 @@ contract FairCoin is Context, IERC20 {
                     Ak.fromInt(int256(_totalSupply)),
                     Ak.fromInt(int256(numberOfRecipients))));
                     
+        // s(0)*e^(-F*t)
         int128 ABDK_taxPart = 
             Ak.mul(
                 Ak.fromInt(int256(_balances[account])),

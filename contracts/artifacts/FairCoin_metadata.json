@@ -376,11 +376,11 @@
 			]
 		},
 		"localhost/contracts/FairCoin.sol": {
-			"keccak256": "0x50116502bc781d82fbf1d765bc5bced12cb997cb7bbcfe232f958d358676010c",
+			"keccak256": "0x696d58fc9d51cf1c9a3812d0b5bb03f1aa7c3dae14d8440084aaa9194593c58e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c7c7178f7c185b4601bf82090a68ff861dada10878165a7a5334fed128a161f0",
-				"dweb:/ipfs/QmZipxNW5gn8GMRm7YftR8TjVNHE5nFHYJ5ydD5TGgmDH2"
+				"bzz-raw://93e5c33ad917c019b89071d8750279c83e74b9def34d0178bca68a85ee4b3cc8",
+				"dweb:/ipfs/QmaAsG3JGAuZjQ9GxKz2v9hZw9MhGuke1bietPWokMPnmD"
 			]
 		}
 	},
