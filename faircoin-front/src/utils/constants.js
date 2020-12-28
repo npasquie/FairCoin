@@ -1,0 +1,4 @@
+export const WEB3_NOT_FETCHED = "WEB3 NOT FETCHED";
+export const WEB3_FETCHING = "WEB3 FETCHING";
+export const WEB3_LOADED = "WEB3 LOADED";
+export const WEB3_FETCH_FAILED = "WEB3 FETCH FAILED";

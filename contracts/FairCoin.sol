@@ -43,7 +43,7 @@ contract FairCoin is Context, IERC20 {
         string memory symbol_,
         address[] memory originalRecipients,
         uint totalSupply,
-        int redistributionRatePercentage) {
+        int redistributionRate) {
         _name = name_;
         _symbol = symbol_;
 
@@ -54,8 +54,7 @@ contract FairCoin is Context, IERC20 {
         creationDate = block.timestamp;
 
         // should be modifiable in future implementations
-        ABDK_redistributionRate = Ak.div(Ak.fromInt(redistributionRatePercentage),Ak.fromInt(100));
-
+        ABDK_redistributionRate = Ak.div(Ak.fromInt(redistributionRate),Ak.fromInt(10000));
         numberOfRecipients = originalRecipients.length;
         for(uint i = 0; i < originalRecipients.length; i++){
             _balances[originalRecipients[i]] = _totalSupply/originalRecipients.length;
