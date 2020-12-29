@@ -8,44 +8,25 @@ import {
     Button,
     Navbar
 } from "react-bootstrap";
-import {useState} from "react";
 import {
     WEB3_FETCH_FAILED,
     WEB3_FETCHING,
     WEB3_LOADED,
     WEB3_NOT_FETCHED
-} from "./utils/constants";
-import Web3 from "web3";
+} from "../../utils/constants";
+import {connect} from 'react-redux'
+import {fetchWeb3} from "../../actions/web3Actions";
 
-
-function fetchWeb3(setWeb3, setStatusFetchWeb3) {
-    setStatusFetchWeb3(WEB3_FETCHING)
-    let web3
-    if (window.ethereum){
-        web3 = new Web3(window.ethereum)
-        try {
-            window.ethereum.send('eth_requestAccounts')
-            web3.eth.getAccounts().then(rep => {
-                setStatusFetchWeb3(WEB3_LOADED)
-                setWeb3(web3)
-                console.log(rep)
-            })
-        } catch (err) {
-            setStatusFetchWeb3(WEB3_FETCH_FAILED)
-            console.log(err)
-        }
-    } else
-        setStatusFetchWeb3(WEB3_FETCH_FAILED)
-}
-
-function App() {
-    const [statusFetchWeb3, setStatusFetchWeb3] = useState(WEB3_NOT_FETCHED);
-    const [web3, setWeb3] = useState(null);
+function App({statusFetchWeb3, handleActivateWeb3}) {
 
     let pageBody
     switch (statusFetchWeb3){
         case WEB3_NOT_FETCHED:
-            fetchWeb3(setWeb3, setStatusFetchWeb3)
+            pageBody = <Button
+                variant={"primary"}
+                onClick={handleActivateWeb3}>
+                Activer la connexion Ethereum
+            </Button>
             break
         case WEB3_FETCHING:
             pageBody = <h3>En attente de la connexion web3 ...</h3>
@@ -132,4 +113,12 @@ function App() {
     );
 }
 
-export default App;
+const mapStateToProps = state => ({
+    statusFetchWeb3: state.connexionStatus
+})
+
+const mapDispatchToProps = dispatch => ({
+    handleActivateWeb3: () => dispatch(fetchWeb3())
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(App);

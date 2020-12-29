@@ -2,6 +2,9 @@
   "license": "mit",
   "dependencies": {
     "@openzeppelin/contracts": "^3.3.0",
-    "abdk-libraries-solidity": "^2.4.0"
+    "abdk-libraries-solidity": "^2.4.0",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
   }
 }
