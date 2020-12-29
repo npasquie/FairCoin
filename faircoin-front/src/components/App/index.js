@@ -16,8 +16,13 @@ import {
 } from "../../utils/constants";
 import {connect} from 'react-redux'
 import {fetchWeb3} from "../../actions/web3Actions";
+import {useState} from "react";
 
 function App({statusFetchWeb3, handleActivateWeb3}) {
+    const [recipients, setRecipients] = useState([''])
+    const [name, setName] = useState('')
+    const [symbol, setSymbol] = useState('')
+    const [totalSupply, setTotalSupply] = useState(0)
 
     let pageBody
     switch (statusFetchWeb3){
@@ -52,16 +57,31 @@ function App({statusFetchWeb3, handleActivateWeb3}) {
                         <Form.Label>Symbole</Form.Label>
                         <FormControl type={"text"} placeholder={"EUR"}/>
                     </Form.Group>
-                    <Form.Group controlId={"address"}>
-                        <Form.Label>
-                            Adresse de récipiendaire 1
-                        </Form.Label>
-                        <FormControl
-                            type={"text"}
-                            placeholder={"0x13aA399f57AEEfDde78F611999B30e0A50BCe59D"}/>
-                    </Form.Group>
+                    {recipients.map((recipient,i) =>
+                        <Form.Group controlId={"address"+i} key={i}>
+                            <Form.Label>
+                                Adresse de récipiendaire {i+1}
+                                {/*<div*/}
+                                {/*onClick={() => {*/}
+                                {/*    let newRecipients = [...recipients]*/}
+                                {/*    setRecipients(newRecipients.splice(i,1))*/}
+                                {/*}}>*/}
+                                {/*    X*/}
+                                {/*</div>*/}
+                            </Form.Label>
+                            <FormControl
+                                type={"text"}
+                                placeholder={"0x13aA399f57AEEfDde78F611999B30e0A50BCe59D"}
+                                onChange={e => {
+                                    let newRecipients = [...recipients]
+                                    newRecipients[i] = e.target.value
+                                    setRecipients(newRecipients)
+                                }}/>
+                        </Form.Group>)}
                     <Form.Group controlId={"add-address"}>
-                        <Button variant={"secondary"}>
+                        <Button
+                            variant={"secondary"}
+                            onClick={()=>{setRecipients([...recipients,''])}}>
                             Ajouter un récipiendaire
                         </Button>
                     </Form.Group>
@@ -70,8 +90,7 @@ function App({statusFetchWeb3, handleActivateWeb3}) {
                             Quantité totale de monnaie
                         </Form.Label>
                         <FormControl
-                            type={"text"}
-                            placeholder={"50000000000000"}/>
+                            type={"number"}/>
                     </Form.Group>
                     <Form.Group>
                         <Form.Row>
