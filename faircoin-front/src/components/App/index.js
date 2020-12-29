@@ -11,8 +11,7 @@ import {
 import {
     WEB3_FETCH_FAILED,
     WEB3_FETCHING,
-    WEB3_LOADED,
-    WEB3_NOT_FETCHED
+    WEB3_LOADED
 } from "../../utils/constants";
 import {connect} from 'react-redux'
 import {fetchWeb3} from "../../actions/web3Actions";
@@ -22,17 +21,11 @@ function App({statusFetchWeb3, handleActivateWeb3}) {
     const [recipients, setRecipients] = useState([''])
     const [name, setName] = useState('')
     const [symbol, setSymbol] = useState('')
-    const [totalSupply, setTotalSupply] = useState(0)
+    const [totalSupply, setTotalSupply] = useState(50000000000000)
+    const [redistributionRate,setRedistributionRate] = useState(4)
 
     let pageBody
     switch (statusFetchWeb3){
-        case WEB3_NOT_FETCHED:
-            pageBody = <Button
-                variant={"primary"}
-                onClick={handleActivateWeb3}>
-                Activer la connexion Ethereum
-            </Button>
-            break
         case WEB3_FETCHING:
             pageBody = <h3>En attente de la connexion web3 ...</h3>
             break
@@ -44,34 +37,45 @@ function App({statusFetchWeb3, handleActivateWeb3}) {
             </>
             break
         case WEB3_LOADED:
-            pageBody = <><h1>Rendez le monde plus juste</h1>
-                <h2>Créez une monnaie sociale</h2>
+            pageBody = <>
                 <Form>
                     <Form.Group controlId={"name"}>
-                        <Form.Label>Nom de la monnaie :</Form.Label>
+                        <Form.Label>Nom de la monnaie</Form.Label>
                         <FormControl
+                            value={name}
+                            onChange={e=>{
+                                setName(e.target.value)
+                            }}
                             type={"text"}
                             placeholder={"euro"}/>
                     </Form.Group>
                     <Form.Group controlId={"symbol"}>
                         <Form.Label>Symbole</Form.Label>
-                        <FormControl type={"text"} placeholder={"EUR"}/>
+                        <FormControl
+                            type={"text"}
+                            placeholder={"EUR"}
+                            value={symbol}
+                            onChange={e=>{
+                                setSymbol(e.target.value)
+                            }}/>
                     </Form.Group>
                     {recipients.map((recipient,i) =>
                         <Form.Group controlId={"address"+i} key={i}>
                             <Form.Label>
-                                Adresse de récipiendaire {i+1}
-                                {/*<div*/}
-                                {/*onClick={() => {*/}
-                                {/*    let newRecipients = [...recipients]*/}
-                                {/*    setRecipients(newRecipients.splice(i,1))*/}
-                                {/*}}>*/}
-                                {/*    X*/}
-                                {/*</div>*/}
+                                Adresse de récipiendaire {i+1}&nbsp;&nbsp;&nbsp;&nbsp;
+                                <Button variant="outline-danger"
+                                    onClick={()=>{
+                                        let newRecipients = [...recipients]
+                                        newRecipients.splice(i,1)
+                                        setRecipients(newRecipients)
+                                    }}>
+                                    Supprimer
+                                </Button>
                             </Form.Label>
                             <FormControl
                                 type={"text"}
                                 placeholder={"0x13aA399f57AEEfDde78F611999B30e0A50BCe59D"}
+                                value={recipients[i]}
                                 onChange={e => {
                                     let newRecipients = [...recipients]
                                     newRecipients[i] = e.target.value
@@ -90,7 +94,11 @@ function App({statusFetchWeb3, handleActivateWeb3}) {
                             Quantité totale de monnaie
                         </Form.Label>
                         <FormControl
-                            type={"number"}/>
+                            type={"number"}
+                            value={totalSupply}
+                            onChange={e=>{
+                                setTotalSupply(e.target.value)
+                            }}/>
                     </Form.Group>
                     <Form.Group>
                         <Form.Row>
@@ -98,10 +106,20 @@ function App({statusFetchWeb3, handleActivateWeb3}) {
                                 <Form.Label>
                                     Taux de redistribution annuel
                                 </Form.Label>
-                                <FormControl type="range"/>
+                                <FormControl
+                                    type="range"
+                                    value={redistributionRate}
+                                    onChange={e=>{
+                                        setRedistributionRate(e.target.value)
+                                    }}/>
                             </Col>
                             <Col xs={"auto"}>
-                                <FormControl type={"number"}/>%
+                                <FormControl
+                                    type={"number"}
+                                    value={redistributionRate}
+                                    onChange={e=>{
+                                        setRedistributionRate(e.target.value)
+                                    }}/>%
                             </Col>
                         </Form.Row>
                     </Form.Group>
@@ -110,6 +128,12 @@ function App({statusFetchWeb3, handleActivateWeb3}) {
                     </Button>
                 </Form></>
             break
+        default:
+            pageBody = <><br/><Button
+            variant={"primary"}
+            onClick={handleActivateWeb3}>
+            Activer la connexion Ethereum
+        </Button></>
     }
 
     return (
@@ -122,6 +146,8 @@ function App({statusFetchWeb3, handleActivateWeb3}) {
                     <Col></Col>
                     <Col xs={8}>
                         <br/>
+                        <h1>Rendez le monde plus juste</h1>
+                        <h2>Créez une monnaie sociale</h2>
                         {pageBody}
                         <br/>
                     </Col>
