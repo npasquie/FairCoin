@@ -19,7 +19,7 @@ function DeploymentPage({deploymentStatus,deployedAt,handleReturnButtonClicked})
             body = <p>Votre nouvelle monnaie est disponible à l'adresse : {deployedAt}</p>
             break
         case DEPLOYMENT_STARTED:
-            body = <p>Veuillez signer la transaction de déploiement avec votre wallet.</p>
+            body = <p>Veuillez signer la transaction de déploiement à l'aide de votre portefeuille.</p>
             break
         case DEPLOYMENT_SIGNED:
             body = <p>Transaction envoyée. En attente de la blockchain ...</p>
