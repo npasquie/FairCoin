@@ -20,6 +20,9 @@ function App({deploymentStatus}) {
         <div className="App">
             <Navbar bg="light">
                 <Navbar.Brand>FairCoin</Navbar.Brand>
+                <Navbar.Brand href={"http://github.com/npasquie/FairCoin"}>
+                    github
+                </Navbar.Brand>
             </Navbar>
             <Container>
                 <Row>
