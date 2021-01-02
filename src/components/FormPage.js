@@ -1,27 +1,23 @@
-import './App.css';
-import {
-    Form,
-    FormControl,
-    Col,
-    Container,
-    Row,
-    Button,
-    Navbar
-} from "react-bootstrap";
+import {useState} from "react";
 import {
     WEB3_FETCH_FAILED,
     WEB3_FETCHING,
     WEB3_LOADED
-} from "../../utils/constants";
-import {connect} from 'react-redux'
-import {fetchWeb3} from "../../actions/web3Actions";
-import {useState} from "react";
+} from "../utils/constants";
+import {
+    Button,
+    Col,
+    Form,
+    FormControl,
+} from "react-bootstrap";
+import {deployCurrency, fetchWeb3} from "../actions/web3Actions";
+import {connect} from "react-redux";
 
-function App({statusFetchWeb3, handleActivateWeb3}) {
+function FormPage({statusFetchWeb3, handleActivateWeb3, handleFormSubmit, web3}) {
     const [recipients, setRecipients] = useState([''])
     const [name, setName] = useState('')
     const [symbol, setSymbol] = useState('')
-    const [totalSupply, setTotalSupply] = useState(50000000000000)
+    const [totalSupply, setTotalSupply] = useState(50000000000)
     const [redistributionRate,setRedistributionRate] = useState(4)
 
     let pageBody
@@ -64,11 +60,11 @@ function App({statusFetchWeb3, handleActivateWeb3}) {
                             <Form.Label>
                                 Adresse de récipiendaire {i+1}&nbsp;&nbsp;&nbsp;&nbsp;
                                 <Button variant="outline-danger"
-                                    onClick={()=>{
-                                        let newRecipients = [...recipients]
-                                        newRecipients.splice(i,1)
-                                        setRecipients(newRecipients)
-                                    }}>
+                                        onClick={()=>{
+                                            let newRecipients = [...recipients]
+                                            newRecipients.splice(i,1)
+                                            setRecipients(newRecipients)
+                                        }}>
                                     Supprimer
                                 </Button>
                             </Form.Label>
@@ -123,47 +119,45 @@ function App({statusFetchWeb3, handleActivateWeb3}) {
                             </Col>
                         </Form.Row>
                     </Form.Group>
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary"
+                            onClick={() => {
+                                handleFormSubmit({
+                                    name: name,
+                                    symbol: symbol,
+                                    recipients: recipients,
+                                    _totalSupply: totalSupply,
+                                    _redistributionRate: redistributionRate,
+                                    web3:web3
+                                })}}>
                         Déployer
                     </Button>
                 </Form></>
             break
         default:
             pageBody = <><br/><Button
-            variant={"primary"}
-            onClick={handleActivateWeb3}>
-            Activer la connexion Ethereum
-        </Button></>
+                variant={"primary"}
+                onClick={handleActivateWeb3}>
+                Activer la connexion Ethereum
+            </Button></>
     }
 
     return (
-        <div className="App">
-            <Navbar bg="light">
-                <Navbar.Brand>FairCoin</Navbar.Brand>
-            </Navbar>
-            <Container>
-                <Row>
-                    <Col></Col>
-                    <Col xs={8}>
-                        <br/>
-                        <h1>Rendez le monde plus juste</h1>
-                        <h2>Créez une monnaie sociale</h2>
-                        {pageBody}
-                        <br/>
-                    </Col>
-                    <Col></Col>
-                </Row>
-            </Container>
+        <div className="FormPage">
+            <h1>Rendez le monde plus juste</h1>
+            <h2>Créez une monnaie sociale</h2>
+            {pageBody}
         </div>
     );
 }
 
 const mapStateToProps = state => ({
-    statusFetchWeb3: state.connexionStatus
+    statusFetchWeb3: state.connexionStatus,
+    web3: state.web3
 })
 
 const mapDispatchToProps = dispatch => ({
-    handleActivateWeb3: () => dispatch(fetchWeb3())
+    handleActivateWeb3: () => dispatch(fetchWeb3()),
+    handleFormSubmit: (args) => dispatch(deployCurrency(args))
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(App);
+export default connect(mapStateToProps,mapDispatchToProps)(FormPage);
