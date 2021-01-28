@@ -1,7 +1,6 @@
 node_modules
 .idea
 src/solidity/contracts/artifacts
-src/solidity/build
 .eslintcache
 /.pnp
 .pnp.js
