@@ -17,8 +17,8 @@ function FormPage({statusFetchWeb3, handleActivateWeb3, handleFormSubmit, web3})
     const [recipients, setRecipients] = useState([''])
     const [name, setName] = useState('')
     const [symbol, setSymbol] = useState('')
-    const [totalSupply, setTotalSupply] = useState(50000000000)
-    const [redistributionRate,setRedistributionRate] = useState(4)
+    const [totalSupply, setTotalSupply] = useState(100)
+    const [redistributionRate,setRedistributionRate] = useState(15)
 
     let pageBody
     switch (statusFetchWeb3){
